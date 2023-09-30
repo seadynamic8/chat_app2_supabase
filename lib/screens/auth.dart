@@ -8,13 +8,23 @@ class AuthScreen extends StatefulWidget {
 }
 
 class _AuthScreenState extends State<AuthScreen> {
+  final _form = GlobalKey<FormState>();
+  var _enteredEmail = '';
+  var _enteredUsername = '';
+  var _enteredPassword = '';
+
+  void _submit() {
+    if (!_form.currentState!.validate()) return;
+    _form.currentState!.save();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Sign Up'),
       ),
-      backgroundColor: Colors.deepPurple[600],
+      backgroundColor: Theme.of(context).colorScheme.primary,
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -31,26 +41,63 @@ class _AuthScreenState extends State<AuthScreen> {
               ),
             ),
             Card(
-              child: Form(
-                child: Column(
-                  children: [
-                    TextFormField(
-                      decoration:
-                          const InputDecoration(labelText: 'Email Address'),
-                      keyboardType: TextInputType.emailAddress,
-                    ),
-                    TextFormField(
-                      decoration: const InputDecoration(labelText: 'Username'),
-                    ),
-                    TextFormField(
-                      decoration: const InputDecoration(labelText: 'Password'),
-                      obscureText: true,
-                    ),
-                    ElevatedButton(
-                      onPressed: () {},
-                      child: const Text('Sign Up'),
-                    ),
-                  ],
+              margin: const EdgeInsets.all(20),
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(16),
+                child: Form(
+                  key: _form,
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        decoration:
+                            const InputDecoration(labelText: 'Email Address'),
+                        keyboardType: TextInputType.emailAddress,
+                        validator: (value) {
+                          if (value == null ||
+                              value.trim().isEmpty ||
+                              !value.contains('@')) {
+                            return 'Please enter a valid email address.';
+                          }
+                          return null;
+                        },
+                        onSaved: (newValue) => _enteredEmail = (newValue!),
+                      ),
+                      TextFormField(
+                        decoration:
+                            const InputDecoration(labelText: 'Username'),
+                        validator: (value) {
+                          if (value == null ||
+                              value.trim().isEmpty ||
+                              value.trim().length < 4) {
+                            return 'Please enter at least 4 characters';
+                          }
+                          return null;
+                        },
+                        onSaved: (newValue) => _enteredUsername = (newValue!),
+                      ),
+                      TextFormField(
+                        decoration:
+                            const InputDecoration(labelText: 'Password'),
+                        obscureText: true,
+                        validator: (value) {
+                          if (value == null || value.trim().length < 6) {
+                            return 'Password must be at least 6 characeters long.';
+                          }
+                          return null;
+                        },
+                        onSaved: (newValue) => _enteredPassword = newValue!,
+                      ),
+                      const SizedBox(height: 12),
+                      ElevatedButton(
+                        onPressed: _submit,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              Theme.of(context).colorScheme.primaryContainer,
+                        ),
+                        child: const Text('Sign Up'),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             )

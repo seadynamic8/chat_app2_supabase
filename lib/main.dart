@@ -11,8 +11,15 @@ class MyChatApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: AuthScreen(),
+    return MaterialApp(
+      title: 'Chat App',
+      theme: ThemeData().copyWith(
+        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color.fromARGB(255, 63, 17, 177),
+        ),
+      ),
+      home: const AuthScreen(),
     );
   }
 }
