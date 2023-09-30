@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+import 'package:chat_app2_supabase/utils/constants.dart';
+import 'package:chat_app2_supabase/screens/chat.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -13,9 +17,29 @@ class _AuthScreenState extends State<AuthScreen> {
   var _enteredUsername = '';
   var _enteredPassword = '';
 
-  void _submit() {
+  void _submit() async {
     if (!_form.currentState!.validate()) return;
     _form.currentState!.save();
+
+    try {
+      final response = await supabase.auth.signUp(
+        email: _enteredEmail,
+        password: _enteredPassword,
+        data: {'username': _enteredUsername},
+      );
+
+      print('response: ${response.session}');
+
+      if (!mounted) return;
+      Navigator.of(context)
+          .push(MaterialPageRoute(builder: (ctx) => const ChatScreen()));
+    } on AuthException catch (error) {
+      if (!mounted) return;
+      context.showErrorSnackBar(error.message);
+    } catch (_) {
+      if (!mounted) return;
+      context.showErrorSnackBar('Unable to create user. Try again later.');
+    }
   }
 
   @override
