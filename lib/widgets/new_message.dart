@@ -1,5 +1,7 @@
-import 'package:chat_app2_supabase/utils/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+import 'package:chat_app2_supabase/utils/constants.dart';
 
 class NewMessage extends StatefulWidget {
   const NewMessage({super.key});
@@ -17,7 +19,7 @@ class _NewMessageState extends State<NewMessage> {
     super.dispose();
   }
 
-  void _submitMessage() {
+  void _submitMessage() async {
     final messageText = _messageController.text.trim();
 
     if (messageText.isEmpty) {
@@ -27,6 +29,20 @@ class _NewMessageState extends State<NewMessage> {
 
     FocusScope.of(context).unfocus();
     _messageController.clear();
+
+    final userId = supabase.auth.currentUser!.id;
+
+    try {
+      await supabase
+          .from('messages')
+          .insert({'user_id': userId, 'content': messageText});
+
+      if (!mounted) return;
+    } on AuthException catch (error) {
+      context.showErrorSnackBar(error.message);
+    } catch (error) {
+      context.showErrorSnackBar('Unable to create message. Try again later.');
+    }
   }
 
   @override
