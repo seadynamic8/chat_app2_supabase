@@ -1,7 +1,8 @@
-import 'package:chat_app2_supabase/screens/splash.dart';
 import 'package:flutter/material.dart';
 
 import 'package:chat_app2_supabase/utils/constants.dart';
+import 'package:chat_app2_supabase/screens/splash.dart';
+import 'package:chat_app2_supabase/widgets/new_message.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -34,7 +35,14 @@ class _ChatScreenState extends State<ChatScreen> {
           ),
         ],
       ),
-      body: const Text('Chat Area'),
+      body: const Column(
+        children: [
+          Expanded(
+            child: Text('Chat Messages'),
+          ),
+          NewMessage(),
+        ],
+      ),
     );
   }
 }
