@@ -20,10 +20,14 @@ class _NewMessageState extends State<NewMessage> {
         children: [
           const Expanded(
             child: TextField(
+              textCapitalization: TextCapitalization.sentences,
+              enableSuggestions: true,
+              autocorrect: true,
               decoration: InputDecoration(hintText: 'Send a message...'),
             ),
           ),
           IconButton(
+            color: Theme.of(context).colorScheme.primary,
             onPressed: () {},
             icon: const Icon(Icons.send),
           ),
