@@ -24,8 +24,10 @@ class _AuthScreenState extends State<AuthScreen> {
 
     try {
       if (_isLogin) {
-        await supabase.auth.signInWithPassword(
+        final response = await supabase.auth.signInWithPassword(
             email: _enteredEmail, password: _enteredPassword);
+
+        print('login-response: ${response.session}');
       } else {
         final response = await supabase.auth.signUp(
           email: _enteredEmail,
@@ -33,18 +35,17 @@ class _AuthScreenState extends State<AuthScreen> {
           data: {'username': _enteredUsername},
         );
 
-        print('response: ${response.session}');
+        print('signup-response: ${response.session}');
       }
 
       if (!mounted) return;
-      // Navigator.of(context)
-      //     .push(MaterialPageRoute(builder: (ctx) => const ChatScreen()));
-      // Navigator.of(context).pop();
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (ctx) => const ChatScreen()),
+        (route) => false,
+      );
     } on AuthException catch (error) {
-      if (!mounted) return;
       context.showErrorSnackBar(error.message);
-    } catch (_) {
-      if (!mounted) return;
+    } catch (error) {
       context.showErrorSnackBar('Unable to create user. Try again later.');
     }
   }

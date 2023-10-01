@@ -1,3 +1,4 @@
+import 'package:chat_app2_supabase/screens/splash.dart';
 import 'package:flutter/material.dart';
 
 import 'package:chat_app2_supabase/utils/constants.dart';
@@ -12,6 +13,13 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   void _logout() async {
     await supabase.auth.signOut();
+
+    if (!mounted) return;
+    Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(
+          builder: (ctx) => const SplashScreen(),
+        ),
+        (route) => false);
   }
 
   @override
