@@ -16,23 +16,30 @@ class _AuthScreenState extends State<AuthScreen> {
   var _enteredEmail = '';
   var _enteredUsername = '';
   var _enteredPassword = '';
+  var _isLogin = false;
 
   void _submit() async {
     if (!_form.currentState!.validate()) return;
     _form.currentState!.save();
 
     try {
-      final response = await supabase.auth.signUp(
-        email: _enteredEmail,
-        password: _enteredPassword,
-        data: {'username': _enteredUsername},
-      );
+      if (_isLogin) {
+        await supabase.auth.signInWithPassword(
+            email: _enteredEmail, password: _enteredPassword);
+      } else {
+        final response = await supabase.auth.signUp(
+          email: _enteredEmail,
+          password: _enteredPassword,
+          data: {'username': _enteredUsername},
+        );
 
-      print('response: ${response.session}');
+        print('response: ${response.session}');
+      }
 
       if (!mounted) return;
-      Navigator.of(context)
-          .push(MaterialPageRoute(builder: (ctx) => const ChatScreen()));
+      // Navigator.of(context)
+      //     .push(MaterialPageRoute(builder: (ctx) => const ChatScreen()));
+      // Navigator.of(context).pop();
     } on AuthException catch (error) {
       if (!mounted) return;
       context.showErrorSnackBar(error.message);
@@ -46,7 +53,7 @@ class _AuthScreenState extends State<AuthScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Sign Up'),
+        title: Text(_isLogin ? 'Log In' : 'Sign Up'),
       ),
       backgroundColor: Theme.of(context).colorScheme.primary,
       body: SingleChildScrollView(
@@ -86,19 +93,20 @@ class _AuthScreenState extends State<AuthScreen> {
                         },
                         onSaved: (newValue) => _enteredEmail = (newValue!),
                       ),
-                      TextFormField(
-                        decoration:
-                            const InputDecoration(labelText: 'Username'),
-                        validator: (value) {
-                          if (value == null ||
-                              value.trim().isEmpty ||
-                              value.trim().length < 4) {
-                            return 'Please enter at least 4 characters';
-                          }
-                          return null;
-                        },
-                        onSaved: (newValue) => _enteredUsername = (newValue!),
-                      ),
+                      if (!_isLogin)
+                        TextFormField(
+                          decoration:
+                              const InputDecoration(labelText: 'Username'),
+                          validator: (value) {
+                            if (value == null ||
+                                value.trim().isEmpty ||
+                                value.trim().length < 4) {
+                              return 'Please enter at least 4 characters';
+                            }
+                            return null;
+                          },
+                          onSaved: (newValue) => _enteredUsername = (newValue!),
+                        ),
                       TextFormField(
                         decoration:
                             const InputDecoration(labelText: 'Password'),
@@ -118,8 +126,18 @@ class _AuthScreenState extends State<AuthScreen> {
                           backgroundColor:
                               Theme.of(context).colorScheme.primaryContainer,
                         ),
-                        child: const Text('Sign Up'),
+                        child: Text(_isLogin ? 'Login' : 'Sign Up'),
                       ),
+                      TextButton(
+                        onPressed: () {
+                          setState(() {
+                            _isLogin = !_isLogin;
+                          });
+                        },
+                        child: Text(_isLogin
+                            ? 'Create an account.'
+                            : 'I already have an account.'),
+                      )
                     ],
                   ),
                 ),
