@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:chat_app2_supabase/utils/constants.dart';
 import 'package:chat_app2_supabase/screens/splash.dart';
+import 'package:chat_app2_supabase/widgets/chat_messages.dart';
 import 'package:chat_app2_supabase/widgets/new_message.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -38,7 +39,7 @@ class _ChatScreenState extends State<ChatScreen> {
       body: const Column(
         children: [
           Expanded(
-            child: Text('Chat Messages'),
+            child: ChatMessages(),
           ),
           NewMessage(),
         ],
