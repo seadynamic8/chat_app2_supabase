@@ -1,3 +1,4 @@
+import 'package:chat_app2_supabase/utils/constants.dart';
 import 'package:flutter/material.dart';
 
 class NewMessage extends StatefulWidget {
@@ -8,6 +9,26 @@ class NewMessage extends StatefulWidget {
 }
 
 class _NewMessageState extends State<NewMessage> {
+  final _messageController = TextEditingController();
+
+  @override
+  void dispose() {
+    _messageController.dispose();
+    super.dispose();
+  }
+
+  void _submitMessage() {
+    final messageText = _messageController.text.trim();
+
+    if (messageText.isEmpty) {
+      context.showSnackBar('Please enter a message');
+      return;
+    }
+
+    FocusScope.of(context).unfocus();
+    _messageController.clear();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -18,17 +39,18 @@ class _NewMessageState extends State<NewMessage> {
       ),
       child: Row(
         children: [
-          const Expanded(
+          Expanded(
             child: TextField(
+              controller: _messageController,
               textCapitalization: TextCapitalization.sentences,
               enableSuggestions: true,
               autocorrect: true,
-              decoration: InputDecoration(hintText: 'Send a message...'),
+              decoration: const InputDecoration(hintText: 'Send a message...'),
             ),
           ),
           IconButton(
             color: Theme.of(context).colorScheme.primary,
-            onPressed: () {},
+            onPressed: _submitMessage,
             icon: const Icon(Icons.send),
           ),
         ],
