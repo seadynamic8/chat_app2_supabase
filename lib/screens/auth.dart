@@ -28,10 +28,8 @@ class _AuthScreenState extends State<AuthScreen> {
 
     try {
       if (_isLogin) {
-        final response = await supabase.auth.signInWithPassword(
+        await supabase.auth.signInWithPassword(
             email: _enteredEmail, password: _enteredPassword);
-
-        print('login-response: ${response.session}');
       } else {
         final response = await supabase.auth.signUp(
           email: _enteredEmail,
@@ -39,7 +37,24 @@ class _AuthScreenState extends State<AuthScreen> {
           data: {'username': _enteredUsername},
         );
 
-        print('signup-response: ${response.session}');
+        if (_selectedImage == null) return; // Image can be not selected.
+
+        final userId = response.user!.id;
+        final imagePath = '$userId.jpg';
+
+        // Store image in storage bucket
+        await supabase.storage
+            .from('avatars')
+            .upload(imagePath, _selectedImage!);
+
+        // Get public image url
+        final imageUrl =
+            supabase.storage.from('avatars').getPublicUrl(imagePath);
+
+        // Store public image url in supabase profile
+        await supabase
+            .from('profiles')
+            .update({'avatar_url': imageUrl}).eq('id', userId);
       }
 
       if (!mounted) return;
@@ -50,7 +65,8 @@ class _AuthScreenState extends State<AuthScreen> {
     } on AuthException catch (error) {
       context.showErrorSnackBar(error.message);
     } catch (error) {
-      context.showErrorSnackBar('Unable to create user. Try again later.');
+      context.showErrorSnackBar(
+          'Something went wrong with the authentication process. Try again later.');
     }
   }
 
