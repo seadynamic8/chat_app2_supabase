@@ -16,7 +16,7 @@ class _AuthScreenState extends State<AuthScreen> {
   var _enteredEmail = '';
   var _enteredUsername = '';
   var _enteredPassword = '';
-  var _isLogin = false;
+  var _isLogin = true;
 
   void _submit() async {
     if (!_form.currentState!.validate()) return;
