@@ -31,7 +31,7 @@ class MessageBubble extends StatelessWidget {
 
     return Stack(
       children: [
-        if (avatarUrl != null)
+        if (avatarUrl != null && isFirstInSequence)
           Positioned(
             top: 15,
             right: isMe ? 0 : null,
