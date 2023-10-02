@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:chat_app2_supabase/widgets/user_image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -18,6 +20,7 @@ class _AuthScreenState extends State<AuthScreen> {
   var _enteredUsername = '';
   var _enteredPassword = '';
   var _isLogin = true;
+  File? _selectedImage;
 
   void _submit() async {
     if (!_form.currentState!.validate()) return;
@@ -81,7 +84,11 @@ class _AuthScreenState extends State<AuthScreen> {
                   key: _form,
                   child: Column(
                     children: [
-                      if (!_isLogin) const UserImagePicker(),
+                      if (!_isLogin)
+                        UserImagePicker(
+                          onPickImage: (pickedImage) =>
+                              _selectedImage = pickedImage,
+                        ),
                       TextFormField(
                         decoration:
                             const InputDecoration(labelText: 'Email Address'),
