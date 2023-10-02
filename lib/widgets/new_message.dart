@@ -56,12 +56,13 @@ class _NewMessageState extends State<NewMessage> {
       child: Row(
         children: [
           Expanded(
-            child: TextField(
+            child: TextFormField(
               controller: _messageController,
               textCapitalization: TextCapitalization.sentences,
               enableSuggestions: true,
               autocorrect: true,
               decoration: const InputDecoration(hintText: 'Send a message...'),
+              onFieldSubmitted: (value) => _submitMessage(),
             ),
           ),
           IconButton(
