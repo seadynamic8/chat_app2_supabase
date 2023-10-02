@@ -18,12 +18,15 @@ class _ChatMessagesState extends State<ChatMessages> {
 
     final data = await supabase
         .from('profiles')
-        .select('username')
+        .select('username, avatar_url')
         .eq('id', userId)
         .single();
 
     setState(() {
-      userData[userId] = {'username': data['username'] as String};
+      userData[userId] = {
+        'username': data['username'] as String,
+        'avatarUrl': data['avatar_url'] as String,
+      };
     });
   }
 
@@ -57,6 +60,11 @@ class _ChatMessagesState extends State<ChatMessages> {
         final List<Map<String, dynamic>> messages = snapshot.data!;
 
         return ListView.builder(
+          padding: const EdgeInsets.only(
+            bottom: 40,
+            left: 13,
+            right: 13,
+          ),
           itemCount: messages.length,
           reverse: true,
           itemBuilder: (ctx, index) {
@@ -73,6 +81,9 @@ class _ChatMessagesState extends State<ChatMessages> {
             _loadUserData(messageUserId);
 
             return MessageBubble(
+              avatarUrl: userData[messageUserId] == null
+                  ? null
+                  : userData[messageUserId]!['avatarUrl'],
               username: userData[messageUserId] == null
                   ? null
                   : userData[messageUserId]!['username'],
