@@ -45,5 +45,11 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Need Access to Your Photo Library to Store Your Avatars</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Need Access to Your Photo Library to Store Your Avatars</string>
+	<key>NSCameraUsageDescription </key>
+	<string>Need Access to Your Camera to Take Picture For Your Avatars</string>
 </dict>
 </plist>
